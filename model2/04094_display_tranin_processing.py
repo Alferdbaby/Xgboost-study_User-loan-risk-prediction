@@ -51,6 +51,8 @@ def xgb_feature(train_set_x,train_set_y,test_set_x,test_set_y):
     dvali = xgb.DMatrix(test_set_x)
     model = xgb.train(params, dtrain, num_boost_round=800)
     predict = model.predict(dvali)
+    print (predict)
+
     return predict,model
 
 
@@ -246,7 +248,7 @@ if __name__ == '__main__':
         sys.exit(23)
  
     #%%
-    test_auth = pd.read_csv('E:\\git_data\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_auth_info.csv',parse_dates = ['auth_time'])
+    test_auth = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_auth_info.csv',parse_dates = ['auth_time'])
 #    auth_time = test_auth['auth_time'].map(lambda x:0 if str(x)=='nan' else 1)
 #    auth_time_df = pd.DataFrame();auth_time_df['id'] = test_auth['id'];auth_time_df['auth_time_df'] = auth_time
     auth_idcard = test_auth['id_card'].map(lambda x:0 if str(x)=='nan' else 1)
@@ -257,13 +259,13 @@ if __name__ == '__main__':
     test_auth['auth_time'].replace('0000-00-00','nan',inplace=True)
     test_auth['auth_time'] = pd.to_datetime(test_auth['auth_time'])
     #%%
-    test_bankcard = pd.read_csv('E:\\git_data\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_bankcard_info.csv')
+    test_bankcard = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_bankcard_info.csv')
     "增加特征"
     test_bankcard_bank_count = test_bankcard.groupby(by=['id'], as_index=False)['bank_name'].agg({'bankcard_count':lambda x :len(x)})
     test_bankcard_card_count = test_bankcard.groupby(by=['id'], as_index=False)['card_type'].agg({'card_type_count':lambda x :len(set(x))})
     test_bankcard_phone_count = test_bankcard.groupby(by=['id'], as_index=False)['phone'].agg({'phone_count':lambda x :len(set(x))})
     #%%
-    test_credit = pd.read_csv('E:\\git_data\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_credit_info.csv')
+    test_credit = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_credit_info.csv')
     #信用评分反序
     test_credit['credit_score_inverse'] = test_credit['credit_score'].map(lambda x :605-x)
     #额度-使用值
@@ -284,14 +286,14 @@ if __name__ == '__main__':
 #    test_order_many_success = test_order.groupby(by=['id']).apply(lambda x:x['sts_order'][(x['sts_order']=='完成').values].count()).reset_index(name = '_order_many_success')
 #    test_order_many_occuer = test_order.groupby(by=['id']).apply(lambda x:x['sts_order'].count()).reset_index(name = '_order_many_occuer')
     #%%
-    test_recieve = pd.read_csv('E:\\git_data\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_recieve_addr_info.csv')
+    test_recieve = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_recieve_addr_info.csv')
     test_recieve['region'] = test_recieve['region'].map(lambda x:str(x)[:2])
     tmp_tmp_recieve = pd.crosstab(test_recieve.id,test_recieve.region);tmp_tmp_recieve = tmp_tmp_recieve.reset_index()
     tmp_tmp_recieve_phone_count = test_recieve.groupby(by=['id']).apply(lambda x:x['fix_phone'].count());tmp_tmp_recieve_phone_count=tmp_tmp_recieve_phone_count.reset_index()
     tmp_tmp_recieve_phone_count_unique = test_recieve.groupby(by=['id']).apply(lambda x:x['fix_phone'].nunique());tmp_tmp_recieve_phone_count_unique=tmp_tmp_recieve_phone_count_unique.reset_index()
 
-    test_target = pd.read_csv('E:\\git_data\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_list.csv',parse_dates = ['appl_sbm_tm'])
-    test_user = pd.read_csv('E:\\git_data\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_user_info.csv',parse_dates = ['birthday'])
+    test_target = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_list.csv',parse_dates = ['appl_sbm_tm'])
+    test_user = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_user_info.csv',parse_dates = ['birthday'])
     is_hobby = test_user['hobby'].map(lambda x:0 if str(x)=='nan' else 1)
     is_hobby_df = pd.DataFrame();is_hobby_df['id'] = test_user['id'];is_hobby_df['is_hobby'] = is_hobby
     is_idcard = test_user['id_card'].map(lambda x:0 if str(x)=='nan' else 1)
@@ -452,13 +454,13 @@ if __name__ == '__main__':
     
     
     predict_result, modelee = xgb_feature(train_train_x,train_train['target'].values,test_test_x,None)
-    ans = pd.read_csv('E:\\git_data\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_list.csv',parse_dates = ['appl_sbm_tm'])
+    ans = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_list.csv',parse_dates = ['appl_sbm_tm'])
     ans['PROB'] = predict_result
     ans = ans.drop(['appl_sbm_tm'],axis=1)
     minmin, maxmax = min(ans['PROB']),max(ans['PROB'])
     ans['PROB'] = ans['PROB'].map(lambda x:(x-minmin)/(maxmax-minmin))
     ans['PROB'] = ans['PROB'].map(lambda x:'%.4f' % x)
-    ans.to_csv('../result/04094test.csv',index=None)
+    ans.to_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\04094test.csv',index=None)
     
     
     
