@@ -56,7 +56,7 @@ def xgb_feature(train_set_x,train_set_y,test_set_x,test_set_y):
 IS_OFFLine = False
 if __name__ == '__main__':
     #%%认证表特征
-    train_auth = pd.read_csv('../AI_risk_train_V3.0/train_auth_info.csv',parse_dates = ['auth_time'])
+    train_auth = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_auth_info.csv',parse_dates = ['auth_time'])
     #注册时是否有时间
     train_auth['is_auth_time_authtable'] = train_auth['auth_time'].map(lambda x:0 if str(x)=='nan' else 1)
     #注册时是否有idcard
@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
 
     #%%银行卡特征
-    train_bankcard = pd.read_csv('../AI_risk_train_V3.0/train_bankcard_info.csv')
+    train_bankcard = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_bankcard_info.csv')
     bank_name_setlen = train_bankcard.groupby(by= ['id'], as_index= False)['bank_name'].agg({'bank_name_len':lambda x:len(set(x))})
     bank_num_len = train_bankcard.groupby(by= ['id'], as_index = False)['tail_num'].agg({'tail_num_len':lambda x:len(x)})
     bank_phone_num_setlen = train_bankcard.groupby(by= ['id'], as_index = False)['phone'].agg({'bank_phone_num':lambda x:x.nunique()})
@@ -76,12 +76,12 @@ if __name__ == '__main__':
     bank_card_type_score = train_bankcard.groupby(by= ['id'], as_index = False)['card_type_score'].agg({'card_type_score_mean':np.mean})
  
     #%%信誉表特征
-    train_credit = pd.read_csv('../AI_risk_train_V3.0/train_credit_info.csv')
+    train_credit = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_credit_info.csv')
     #额度-使用值
     train_credit['can_use_credittable'] = train_credit['quota'] - train_credit['overdraft']
 
     #%%订单表特征
-    train_order = pd.read_csv('../AI_risk_train_V3.0/train_order_info.csv',parse_dates=['time_order'])
+    train_order = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_order_info.csv',parse_dates=['time_order'])
     train_order['amt_order_ordertable'] = train_order['amt_order'].map(lambda x:np.nan if ((x == 'NA')| (x == 'null')) else float(x))
     train_order['unit_price_ordertable'] = train_order['unit_price'].map(lambda x:np.nan if ((x == 'NA')| (x == 'null')) else float(x))
     
@@ -95,17 +95,17 @@ if __name__ == '__main__':
 
 
     #%%收货地址特征
-    train_recieve = pd.read_csv('../AI_risk_train_V3.0/train_recieve_addr_info.csv')
+    train_recieve = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_recieve_addr_info.csv')
     train_recieve['first_name'] = train_recieve['region'].map(lambda x:str(x)[:2])
     train_recieve['last_name'] = train_recieve['region'].map(lambda x:str(x)[-1])
 
 
     #%%target表特征
-    train_target = pd.read_csv('../AI_risk_train_V3.0/train_target.csv',parse_dates = ['appl_sbm_tm'])
+    train_target = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_target.csv',parse_dates = ['appl_sbm_tm'])
 
 
     #%%用户表特征
-    train_user = pd.read_csv('../AI_risk_train_V3.0/train_user_info.csv')
+    train_user = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_user_info.csv')
     train_user = train_user.drop(['merriage','income','id_card','degree','industry'],axis=1)
     # train_user = train_user.drop(['id_card'],axis=1)
     train_user['is_hobby_usertable'] = train_user['hobby'].map(lambda x:0 if str(x)=='nan' else 1)
@@ -218,7 +218,7 @@ if __name__ == '__main__':
 
  
     #%%认证表特征
-    test_auth = pd.read_csv('../AI_risk_test_V3.0/test_auth_info.csv',parse_dates = ['auth_time'])
+    test_auth = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_auth_info.csv',parse_dates = ['auth_time'])
     #注册时是否有时间
     test_auth['is_auth_time_authtable'] = test_auth['auth_time'].map(lambda x:0 if ((str(x)=='nan')|(str(x)=='0000-00-00'))  else 1)
     #注册时是否有idcard
@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
 
     #%%银行卡特征
-    test_bankcard = pd.read_csv('../AI_risk_test_V3.0/test_bankcard_info.csv')
+    test_bankcard = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_bankcard_info.csv')
     bank_name_setlen = test_bankcard.groupby(by= ['id'], as_index= False)['bank_name'].agg({'bank_name_len':lambda x:len(set(x))})
     bank_num_len = test_bankcard.groupby(by= ['id'], as_index = False)['tail_num'].agg({'tail_num_len':lambda x:len(x)})
     bank_phone_num_setlen = test_bankcard.groupby(by= ['id'], as_index = False)['phone'].agg({'bank_phone_num':lambda x:x.nunique()})
@@ -239,12 +239,12 @@ if __name__ == '__main__':
     bank_card_type_score = test_bankcard.groupby(by= ['id'], as_index = False)['card_type_score'].agg({'card_type_score_mean':np.mean})
 
     #%%信誉表特征
-    test_credit = pd.read_csv('../AI_risk_test_V3.0/test_credit_info.csv')
+    test_credit = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_credit_info.csv')
     #额度-使用值
     test_credit['can_use_credittable'] = test_credit['quota'] - test_credit['overdraft']
 
     #%%订单表特征
-    test_order = pd.read_csv('../AI_risk_test_V3.0/test_order_info.csv',parse_dates=['time_order'])
+    test_order = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_order_info.csv',parse_dates=['time_order'])
     test_order['amt_order_ordertable'] = test_order['amt_order'].map(lambda x:np.nan if ((x == 'NA')| (x == 'null')) else float(x))
     test_order['unit_price_ordertable'] = test_order['unit_price'].map(lambda x:np.nan if ((x == 'NA')| (x == 'null')) else float(x))
     test_order['time_order_ordertable'] = test_order['time_order'].map(lambda x : pd.lib.NaT if (str(x) == '0' or x == 'NA' or x == 'nan')
@@ -255,15 +255,15 @@ if __name__ == '__main__':
 
 
     #%%收货地址特征
-    test_recieve = pd.read_csv('../AI_risk_test_V3.0/test_recieve_addr_info.csv')
+    test_recieve = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_recieve_addr_info.csv')
 
 
     #%%target表特征
-    test_target = pd.read_csv('../AI_risk_test_V3.0/test_list.csv',parse_dates = ['appl_sbm_tm'])
+    test_target = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_list.csv',parse_dates = ['appl_sbm_tm'])
 
 
     #%%用户表特征
-    test_user = pd.read_csv('../AI_risk_test_V3.0/test_user_info.csv')
+    test_user = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_user_info.csv')
     test_user = test_user.drop(['merriage','income','id_card','degree','industry'],axis=1)
     # test_user = test_user.drop(['id_card'],axis=1)
     test_user['is_hobby_usertable'] = test_user['hobby'].map(lambda x:0 if str(x)=='nan' else 1)
@@ -314,7 +314,7 @@ if __name__ == '__main__':
 
 
     ###建立银行违约率临时表
-
+    bank_name_score_mean["id"] = bank_name_score_mean["id"].apply(int)
     test_data = pd.merge(test_data,bank_name_score_mean,on=['id'],how='left')
 
 
@@ -356,7 +356,7 @@ if __name__ == '__main__':
 
     predict_result = xgb_feature(train_train_x,train_train['target'].values,test_test_x,None)
 
-    ans = pd.read_csv('../AI_risk_test_V3.0/test_list.csv',parse_dates = ['appl_sbm_tm'])
+    ans = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_test_V3.0\\test_list.csv',parse_dates = ['appl_sbm_tm'])
     ans['PROB'] = predict_result
     ans = ans.drop(['appl_sbm_tm'],axis=1)
     minmin, maxmax = min(ans['PROB']),max(ans['PROB'])
