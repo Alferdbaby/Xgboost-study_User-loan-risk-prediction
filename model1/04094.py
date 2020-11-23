@@ -34,7 +34,7 @@ def xgb_valid(train_set_x,train_set_y):
     model = xgb.cv(params, dtrain, num_boost_round=1000,nfold=5,metrics={'auc'},seed=10)
     print(model)
 
-
+#定义Xgboost特征提取函数
 def xgb_feature(train_set_x,train_set_y,test_set_x,test_set_y):
     # 模型参数
     params = {'booster': 'gbtree',
@@ -56,10 +56,11 @@ def xgb_feature(train_set_x,train_set_y,test_set_x,test_set_y):
 
     
 if __name__ == '__main__':
-    #%%
+    #读取训练数据集中的系统认证数据（train_auth_info.csv）；read_csv()函数中，parse_dates表示将哪一列解析为时间索引。
     train_auth = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_auth_info.csv',parse_dates = ['auth_time'])
 #    auth_time = train_auth['auth_time'].map(lambda x:0 if str(x)=='nan' else 1)
 #    auth_time_df = pd.DataFrame();auth_time_df['id'] = train_auth['id'];auth_time_df['auth_time_df'] = auth_time
+    #目的：将train_auth中列索引为id_card的列数据(必须为Series)，缺失值NA的数用0表示，不是缺失值用1表示。
     auth_idcard = train_auth['id_card'].map(lambda x:0 if str(x)=='nan' else 1)
     auth_idcard_df = pd.DataFrame();auth_idcard_df['id'] = train_auth['id'];auth_idcard_df['auth_idcard_df'] = auth_idcard
     auth_phone = train_auth['phone'].map(lambda x:0 if str(x)=='nan' else 1)
@@ -459,7 +460,5 @@ if __name__ == '__main__':
     ans['PROB'] = ans['PROB'].map(lambda x:(x-minmin)/(maxmax-minmin))
     ans['PROB'] = ans['PROB'].map(lambda x:'%.4f' % x)
     ans.to_csv('../result/04094test.csv',index=None)
-    
-    
-    
-    
+
+# %%
