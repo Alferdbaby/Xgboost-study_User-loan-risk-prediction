@@ -63,9 +63,11 @@ if __name__ == '__main__':
     #目的：将train_auth中列索引为id_card的列数据(必须为Series)，缺失值NA的数用0表示，不是缺失值用1表示。
     auth_idcard = train_auth['id_card'].map(lambda x:0 if str(x)=='nan' else 1)
     auth_idcard_df = pd.DataFrame();auth_idcard_df['id'] = train_auth['id'];auth_idcard_df['auth_idcard_df'] = auth_idcard
+    #目的：将train_auth中列索引为phone的列数据，空值赋值为0，存在值赋值为1。
     auth_phone = train_auth['phone'].map(lambda x:0 if str(x)=='nan' else 1)
     auth_phone_df = pd.DataFrame();auth_phone_df['id'] = train_auth['id'];auth_idcard_df['auth_phone_df'] = auth_phone
     #%%
+    #读取训练数据集中的银行卡信息。
     train_bankcard = pd.read_csv('E:\\git_data\\data Xgboost study_User-loan-risk-prediction\\AI_risk_train_V3.0\\train_bankcard_info.csv')
     "增加特征"
     train_bankcard_bank_count = train_bankcard.groupby(by=['id'], as_index=False)['bank_name'].agg({'bankcard_count':lambda x :len(x)})
